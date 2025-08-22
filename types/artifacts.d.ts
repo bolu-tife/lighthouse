@@ -506,7 +506,7 @@ declare module Artifacts {
   }
 
   interface TraceElement {
-    traceEventType: 'trace-engine'|'largest-contentful-paint'|'layout-shift'|'animation'|'responsiveness';
+    traceEventType: 'trace-engine'|'largest-contentful-paint'|'layout-shift'|'animation'|'responsiveness'|'element-timing';
     node: NodeDetails;
     nodeId: number;
     animations?: {name?: string, failureReasonsMask?: number, unsupportedProperties?: string[]}[];
@@ -929,6 +929,17 @@ export interface TraceEvent {
       initiator?: {type: string, url?: string, stack?: any};
       protocol?: string;
       finishTime?: number;
+      elementId?: string;
+      elementType?: string;
+      identifier?: string;
+      loadTime?: number;
+      naturalHeight?: number;
+      naturalWidth?: number;
+      rectHeight?: number;
+      rectLeft?: number;
+      rectTop?: number;
+      rectWidth?: number;
+      renderTime?: number;
     };
     frame?: string;
     name?: string;
