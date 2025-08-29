@@ -23,7 +23,7 @@ const UIStrings = {
   columnType: 'Type',
   columnRenderTime: 'Render Time',
   columnLoadTime: 'Load Time',
-  columnElement: 'Element',
+  columnIdentifier: 'Identifier',
 };
 
 const str_ = i18n.createIcuMessageFn(import.meta.url, UIStrings);
@@ -50,33 +50,30 @@ class ElementTimings extends Audit {
    */
   static async audit(artifacts, context) {
     const trace = artifacts.Trace;
-    const traceElements = artifacts.TraceElements;
     const elementTimings = await ComputedElementTimings.request(trace, context);
 
 
     /** @type {LH.Audit.Details.Table['headings']} */
     const headings = [
       {key: 'name', valueType: 'text', label: str_(i18n.UIStrings.columnName)},
-      {key: 'timingType', valueType: 'text', label: str_(UIStrings.columnType)},
+      {key: 'identifier', valueType: 'text', label: str_(UIStrings.columnIdentifier)},
+      {key: 'startTime', valueType: 'ms', granularity: 0.01,
+        label: str_(i18n.UIStrings.columnStartTime)},
       {key: 'renderTime', valueType: 'ms', granularity: 0.01,
         label: str_(UIStrings.columnRenderTime)},
-      {key: 'loadTime', valueType: 'ms', granularity: 0.01,
-        label: str_(UIStrings.columnLoadTime)},
-      {key: 'element', valueType: 'node', label: str_(UIStrings.columnElement)},
-
+      {key: 'duration', valueType: 'ms', granularity: 0.01,
+        label: str_(i18n.UIStrings.columnDuration)},
     ];
 
-    const results = elementTimings.map((timing) => {
-      // Find the corresponding node details from TraceElements
-      // eslint-disable-next-line no-unused-vars
-      const nodeDetails = traceElements.find(el => el.nodeId === timing.nodeId);
 
+    const results = elementTimings.map((timing) => {
       return {
-        name: timing.identifier,
-        timingType: timing.elementType,
+        name: timing.name,
+        elementId: timing.elementId,
+        startTime: timing.startTime,
+        duration: timing.duration,
+        identifier: timing.identifier,
         renderTime: timing.renderTime,
-        loadTime: timing.loadTime,
-        // element: nodeDetails,
       };
     });
 
