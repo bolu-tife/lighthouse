@@ -50,21 +50,19 @@ class ElementTimings extends Audit {
   static async audit(artifacts, context) {
     const trace = artifacts.Trace;
     const elementTimings = await ComputedElementTimings.request(trace, context);
+    const traceElements = artifacts.TraceElements;
+
 
     /** @type {LH.Audit.Details.Table['headings']} */
-    const headings = [
-      {key: 'node', valueType: 'node', label: str_(i18n.UIStrings.columnElement)},
-      {key: 'elementId', valueType: 'text', label: str_(UIStrings.columnElementId)},
-      {key: 'loadTime', valueType: 'ms', granularity: 1, label: str_(UIStrings.columnLoadTime)},
-    ];
+    const headings = [{key: 'node', valueType: 'node', label: str_(i18n.UIStrings.columnElement)}];
 
     const items = elementTimings.map(timing => {
-      const traceElements = artifacts.TraceElements
-        .filter(element => element.traceEventType === 'element-timing')
-        .find(element => element.elementTiming?.elementId === timing.elementId);
+      const element = traceElements.find(t => t.nodeId === timing.nodeId);
 
-      const node = traceElements ? Audit.makeNodeItem(traceElements.node) : timing.elementId;
-      return {node, loadTime: timing.loadTime, elementId: timing.elementId};
+      const node = element ? Audit.makeNodeItem(element.node) :
+      /** @type {LH.Audit.Details.TextValue} */ ( {type: 'text', value: timing.elementId});
+
+      return {node};
     });
 
     const details = Audit.makeTableDetails(headings, items);
