@@ -62,7 +62,7 @@ class ElementTimings extends Audit {
       const node = element ? Audit.makeNodeItem(element.node) :
       /** @type {LH.Audit.Details.TextValue} */ ( {type: 'text', value: timing.elementId});
 
-      return {node};
+      return {node, loadTime: timing.loadTime};
     });
 
     const details = Audit.makeTableDetails(headings, items);

@@ -24,7 +24,9 @@ class ElementTimings {
       if (!data) continue;
 
       elementTimings.push({
-        ...data,
+        elementId: data.elementId,
+        loadTime: data.loadTime,
+        nodeId: data.nodeId,
       });
     }
     return elementTimings;
